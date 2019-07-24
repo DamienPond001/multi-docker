@@ -1,8 +1,8 @@
- language: generic
+language: generic
  
- sudo: required
+sudo: required
  
- services:
+services:
   - docker
 
 before_install:
