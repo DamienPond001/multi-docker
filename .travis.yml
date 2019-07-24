@@ -1,0 +1,22 @@
+ sudo: required
+ services:
+  - docker
+
+before_install:
+  - docker build -t damienpond/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true damienpond/react-test npm test
+
+after_success:
+  - docker build -t damienpond/multi-client ./client
+  - docker build -t damienpond/multi-nginx ./nginx
+  - docker build -t damienpond/multi-server ./server
+  - docker build -t damienpond/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push damienpond/multi-client 
+  - docker push damienpond/multi-nginx 
+  - docker push damienpond/multi-server 
+  - docker push damienpond/multi-worker
